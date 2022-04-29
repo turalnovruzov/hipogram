@@ -15,7 +15,7 @@ class ListPostsView(ListView):
     template_name = 'post_list.html'
     queryset = Post.objects.all().order_by("-creation_datetime")
     context_object_name = "posts"
-    paginate_by = 2
+    paginate_by = 5
 
 class CreatePostView(LoginRequiredMixin, CreateView):
     template_name = 'post_create.html'
