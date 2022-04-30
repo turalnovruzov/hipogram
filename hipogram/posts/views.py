@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.db.models import Count
 from django.urls import reverse_lazy
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from hipogram.posts.forms import CreatePostForm
 from hipogram.tags.models import Tag
@@ -60,6 +60,27 @@ class UpdatePostView(LoginRequiredMixin, UpdateView):
     model = Post
     template_name = 'post_update_delete.html'
     form_class = CreatePostForm
+    success_url = reverse_lazy('posts:list')
+
+    def get_object(self):
+        post = super().get_object()
+
+        # Check if the current user is the post's owner
+        if post.created_by != self.request.user:
+            raise PermissionDenied()
+        
+        return post
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Get the post id
+        context['post_id'] = self.get_object().id
+        
+        return context
+
+class DeletePostView(LoginRequiredMixin, DeleteView):
+    model = Post
     success_url = reverse_lazy('posts:list')
 
     def get_object(self):
