@@ -1,10 +1,11 @@
 from django.urls import path
 
-from hipogram.posts.views import post_list_view, ListPostsView, CreatePostView
+from hipogram.posts.views import ListPostsView, CreatePostView, UpdatePostView
 
 app_name = "posts"
 
 urlpatterns = [
     path("", ListPostsView.as_view(), name="list"),
-    path("create_post", CreatePostView.as_view(), name="create")
+    path("posts/create", CreatePostView.as_view(), name="create"),
+    path("posts/<int:pk>/update", UpdatePostView.as_view(), name="update")
 ]

@@ -1,18 +1,14 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.db.models import Count
-from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
 from hipogram.posts.forms import CreatePostForm
 from hipogram.tags.models import Tag
 
 from .models import Post
 
-
-def post_list_view(request):
-    posts = Post.objects.all().order_by("-creation_datetime")
-    return render(request, "post_list.html", {'posts': posts})
 
 class ListPostsView(ListView):
     template_name = 'post_list.html'
@@ -45,7 +41,7 @@ class ListPostsView(ListView):
         # Add all tags to the context ordered by the number of posts that have the tag descending
         context['tags'] = Tag.objects.all() \
                              .annotate(num_posts=Count('posts')) \
-                             .order_by('-num_posts')
+                             .order_by('-num_posts')[:5]
         return context
 
 class CreatePostView(LoginRequiredMixin, CreateView):
@@ -59,3 +55,18 @@ class CreatePostView(LoginRequiredMixin, CreateView):
         self.object.created_by = self.request.user
         self.object.save()
         return super().form_valid(form)
+
+class UpdatePostView(LoginRequiredMixin, UpdateView):
+    model = Post
+    template_name = 'post_update_delete.html'
+    form_class = CreatePostForm
+    success_url = reverse_lazy('posts:list')
+
+    def get_object(self):
+        post = super().get_object()
+
+        # Check if the current user is the post's owner
+        if post.created_by != self.request.user:
+            raise PermissionDenied()
+        
+        return post
