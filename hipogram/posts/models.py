@@ -9,3 +9,6 @@ class Post(models.Model):
     creation_datetime = models.DateTimeField(auto_now_add=True)
 
     tags = models.ManyToManyField(Tag, related_name='posts')
+
+    def __str__(self):
+        return f'{self.text} by {self.created_by.username}'
