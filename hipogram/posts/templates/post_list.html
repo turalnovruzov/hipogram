@@ -2,16 +2,28 @@
 
 {% block content %}
   <div class="container">
-    {% for post in posts %}
-      <div class="card mb-3">
-        <div class="card-body">
-          <h2 class="card-title">{{ post.created_by.username }}</h2>
-          <img class="img-fluid mb-3" style="max-height:400px" src="{{ post.image.url }}"/>
-          <p class="card-text">{{ post.text }}</p>
-        </div>
-        <small class="card-footer text-muted text-right p-2">{{ post.creation_datetime|date:"H:i - d.m.Y" }}</small>
+    <div class="row">
+      {% comment %} Just a placeholder {% endcomment %}
+      <div class="col-2"></div>
+
+      <div class="col">
+        {% for post in posts %}
+          <div class="card mb-3">
+            <div class="card-body">
+              <h2 class="card-title">{{ post.created_by.username }}</h2>
+              <img class="img-fluid mb-3" style="max-height:400px" src="{{ post.image.url }}"/>
+              <p class="card-text">{{ post.text }}</p>
+            </div>
+            <small class="card-footer text-muted text-right p-2">{{ post.creation_datetime|date:"H:i - d.m.Y" }}</small>
+          </div>
+        {% endfor %}
       </div>
-    {% endfor %}
+
+      <div class="col-3">
+        {% include "tag_list.html" with tags=tags %}
+      </div>
+    </div>
+    
 
     <nav aria-label="Page navigation">
       <ul class="pagination justify-content-center">
