@@ -51,7 +51,7 @@ class ListPostsView(ListView):
 class CreatePostView(LoginRequiredMixin, CreateView):
     template_name = 'post_create.html'
     form_class = CreatePostForm
-    success_url = reverse_lazy('posts:create')
+    success_url = reverse_lazy('posts:list')
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
