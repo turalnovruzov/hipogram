@@ -24,11 +24,18 @@ class ListPostsView(ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
 
-        # See if there is a tag parameter in the query
         tag_name = self.request.GET.get('tag', None)
+        username = self.request.GET.get('username', None)
+
+        # See if there is a tag parameter in the query
         if tag_name is not None:
             # Filter the posts based on whether they have the given tag
             queryset = queryset.filter(tags__name=tag_name)
+
+        # See if there is a username parameter in the query
+        if username is not None:
+            # Filter the posts based on the user they was created by
+            queryset = queryset.filter(created_by__username=username)
         
         return queryset
 
