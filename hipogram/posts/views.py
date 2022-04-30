@@ -42,6 +42,9 @@ class ListPostsView(ListView):
         context['tags'] = Tag.objects.all() \
                              .annotate(num_posts=Count('posts')) \
                              .order_by('-num_posts')[:5]
+        
+        context['username'] = self.request.user.username
+        
         return context
 
 class CreatePostView(LoginRequiredMixin, CreateView):
@@ -76,7 +79,7 @@ class UpdatePostView(LoginRequiredMixin, UpdateView):
 
         # Get the post id
         context['post_id'] = self.get_object().id
-        
+
         return context
 
 class DeletePostView(LoginRequiredMixin, DeleteView):
